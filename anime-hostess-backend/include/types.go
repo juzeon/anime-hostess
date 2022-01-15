@@ -1,6 +1,9 @@
 package include
 
-import "flag"
+import (
+	"flag"
+	"fmt"
+)
 
 var ConfigPath string
 
@@ -22,13 +25,28 @@ func NewSuccessResult(data interface{}) Result {
 	}
 }
 func NewErrorResult(data interface{}) Result {
+	err, ok := data.(error)
+	if ok {
+		fmt.Println("#+v", err)
+	}
 	return Result{
 		Status: false,
 		Data:   data,
 	}
 }
 
+type Video struct {
+	SeriesName string `json:"seriesName"`
+	Name       string `json:"name"`
+	Path       string `json:"path"`
+}
+
+type Series struct {
+	Name   string  `json:"name"`
+	Videos []Video `json:"videos"`
+}
+
 func init() {
 	flag.Parse()
-	ConfigPath = *flag.String("c", "", "ConfigPath path")
+	ConfigPath = *flag.String("c", "", "configuration path")
 }
