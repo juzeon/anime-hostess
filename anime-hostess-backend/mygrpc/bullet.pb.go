@@ -178,6 +178,155 @@ func (x *AnimeEntity) GetTitle() string {
 	return ""
 }
 
+type AnimeRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SeasonID int64 `protobuf:"varint,1,opt,name=seasonID,proto3" json:"seasonID,omitempty"`
+}
+
+func (x *AnimeRequest) Reset() {
+	*x = AnimeRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mygrpc_bullet_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AnimeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AnimeRequest) ProtoMessage() {}
+
+func (x *AnimeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mygrpc_bullet_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AnimeRequest.ProtoReflect.Descriptor instead.
+func (*AnimeRequest) Descriptor() ([]byte, []int) {
+	return file_mygrpc_bullet_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AnimeRequest) GetSeasonID() int64 {
+	if x != nil {
+		return x.SeasonID
+	}
+	return 0
+}
+
+type AnimeResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []*EpisodeEntity `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *AnimeResponse) Reset() {
+	*x = AnimeResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mygrpc_bullet_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AnimeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AnimeResponse) ProtoMessage() {}
+
+func (x *AnimeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_mygrpc_bullet_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AnimeResponse.ProtoReflect.Descriptor instead.
+func (*AnimeResponse) Descriptor() ([]byte, []int) {
+	return file_mygrpc_bullet_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AnimeResponse) GetData() []*EpisodeEntity {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type EpisodeEntity struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Cid   int64  `protobuf:"varint,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+}
+
+func (x *EpisodeEntity) Reset() {
+	*x = EpisodeEntity{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mygrpc_bullet_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *EpisodeEntity) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EpisodeEntity) ProtoMessage() {}
+
+func (x *EpisodeEntity) ProtoReflect() protoreflect.Message {
+	mi := &file_mygrpc_bullet_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EpisodeEntity.ProtoReflect.Descriptor instead.
+func (*EpisodeEntity) Descriptor() ([]byte, []int) {
+	return file_mygrpc_bullet_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *EpisodeEntity) GetCid() int64 {
+	if x != nil {
+		return x.Cid
+	}
+	return 0
+}
+
+func (x *EpisodeEntity) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
 var File_mygrpc_bullet_proto protoreflect.FileDescriptor
 
 var file_mygrpc_bullet_proto_rawDesc = []byte{
@@ -193,13 +342,26 @@ var file_mygrpc_bullet_proto_rawDesc = []byte{
 	0x74, 0x79, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x49, 0x44, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x73, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x49, 0x44, 0x12, 0x14,
 	0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74,
-	0x69, 0x74, 0x6c, 0x65, 0x32, 0x4e, 0x0a, 0x06, 0x42, 0x75, 0x6c, 0x6c, 0x65, 0x74, 0x12, 0x44,
+	0x69, 0x74, 0x6c, 0x65, 0x22, 0x2a, 0x0a, 0x0c, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x73, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x49, 0x44,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x73, 0x65, 0x61, 0x73, 0x6f, 0x6e, 0x49, 0x44,
+	0x22, 0x38, 0x0a, 0x0d, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x27, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x13, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x45, 0x70, 0x69, 0x73, 0x6f, 0x64, 0x65, 0x45, 0x6e,
+	0x74, 0x69, 0x74, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x37, 0x0a, 0x0d, 0x45, 0x70,
+	0x69, 0x73, 0x6f, 0x64, 0x65, 0x45, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x63,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x63, 0x69, 0x64, 0x12, 0x14, 0x0a,
+	0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69,
+	0x74, 0x6c, 0x65, 0x32, 0x85, 0x01, 0x0a, 0x06, 0x42, 0x75, 0x6c, 0x6c, 0x65, 0x74, 0x12, 0x44,
 	0x0a, 0x0b, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x12, 0x18, 0x2e,
 	0x67, 0x72, 0x70, 0x63, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x41, 0x6e, 0x69, 0x6d, 0x65,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x53,
 	0x65, 0x61, 0x72, 0x63, 0x68, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x3b, 0x6d, 0x79, 0x67, 0x72, 0x70, 0x63,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x35, 0x0a, 0x08, 0x47, 0x65, 0x74, 0x41, 0x6e, 0x69, 0x6d, 0x65,
+	0x12, 0x12, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x41, 0x6e, 0x69, 0x6d,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e,
+	0x3b, 0x6d, 0x79, 0x67, 0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -214,21 +376,27 @@ func file_mygrpc_bullet_proto_rawDescGZIP() []byte {
 	return file_mygrpc_bullet_proto_rawDescData
 }
 
-var file_mygrpc_bullet_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_mygrpc_bullet_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_mygrpc_bullet_proto_goTypes = []interface{}{
 	(*SearchAnimeRequest)(nil),  // 0: grpc.SearchAnimeRequest
 	(*SearchAnimeResponse)(nil), // 1: grpc.SearchAnimeResponse
 	(*AnimeEntity)(nil),         // 2: grpc.AnimeEntity
+	(*AnimeRequest)(nil),        // 3: grpc.AnimeRequest
+	(*AnimeResponse)(nil),       // 4: grpc.AnimeResponse
+	(*EpisodeEntity)(nil),       // 5: grpc.EpisodeEntity
 }
 var file_mygrpc_bullet_proto_depIdxs = []int32{
 	2, // 0: grpc.SearchAnimeResponse.data:type_name -> grpc.AnimeEntity
-	0, // 1: grpc.Bullet.SearchAnime:input_type -> grpc.SearchAnimeRequest
-	1, // 2: grpc.Bullet.SearchAnime:output_type -> grpc.SearchAnimeResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	5, // 1: grpc.AnimeResponse.data:type_name -> grpc.EpisodeEntity
+	0, // 2: grpc.Bullet.SearchAnime:input_type -> grpc.SearchAnimeRequest
+	3, // 3: grpc.Bullet.GetAnime:input_type -> grpc.AnimeRequest
+	1, // 4: grpc.Bullet.SearchAnime:output_type -> grpc.SearchAnimeResponse
+	4, // 5: grpc.Bullet.GetAnime:output_type -> grpc.AnimeResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_mygrpc_bullet_proto_init() }
@@ -273,6 +441,42 @@ func file_mygrpc_bullet_proto_init() {
 				return nil
 			}
 		}
+		file_mygrpc_bullet_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AnimeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mygrpc_bullet_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AnimeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mygrpc_bullet_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*EpisodeEntity); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -280,7 +484,7 @@ func file_mygrpc_bullet_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mygrpc_bullet_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -307,6 +511,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type BulletClient interface {
 	SearchAnime(ctx context.Context, in *SearchAnimeRequest, opts ...grpc.CallOption) (*SearchAnimeResponse, error)
+	GetAnime(ctx context.Context, in *AnimeRequest, opts ...grpc.CallOption) (*AnimeResponse, error)
 }
 
 type bulletClient struct {
@@ -326,9 +531,19 @@ func (c *bulletClient) SearchAnime(ctx context.Context, in *SearchAnimeRequest, 
 	return out, nil
 }
 
+func (c *bulletClient) GetAnime(ctx context.Context, in *AnimeRequest, opts ...grpc.CallOption) (*AnimeResponse, error) {
+	out := new(AnimeResponse)
+	err := c.cc.Invoke(ctx, "/grpc.Bullet/GetAnime", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BulletServer is the server API for Bullet service.
 type BulletServer interface {
 	SearchAnime(context.Context, *SearchAnimeRequest) (*SearchAnimeResponse, error)
+	GetAnime(context.Context, *AnimeRequest) (*AnimeResponse, error)
 }
 
 // UnimplementedBulletServer can be embedded to have forward compatible implementations.
@@ -337,6 +552,9 @@ type UnimplementedBulletServer struct {
 
 func (*UnimplementedBulletServer) SearchAnime(context.Context, *SearchAnimeRequest) (*SearchAnimeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchAnime not implemented")
+}
+func (*UnimplementedBulletServer) GetAnime(context.Context, *AnimeRequest) (*AnimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAnime not implemented")
 }
 
 func RegisterBulletServer(s *grpc.Server, srv BulletServer) {
@@ -361,6 +579,24 @@ func _Bullet_SearchAnime_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Bullet_GetAnime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AnimeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BulletServer).GetAnime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.Bullet/GetAnime",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BulletServer).GetAnime(ctx, req.(*AnimeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Bullet_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.Bullet",
 	HandlerType: (*BulletServer)(nil),
@@ -368,6 +604,10 @@ var _Bullet_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchAnime",
 			Handler:    _Bullet_SearchAnime_Handler,
+		},
+		{
+			MethodName: "GetAnime",
+			Handler:    _Bullet_GetAnime_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

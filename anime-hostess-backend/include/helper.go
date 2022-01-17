@@ -103,7 +103,11 @@ func ValidateFields(validateFun func(valid *validation.Validation, ctx *gin.Cont
 		valid := &validation.Validation{}
 		validateFun(valid, ctx)
 		if valid.HasErrors() {
-			ctx.JSON(200, NewErrorResult(valid.Errors))
+			str := ""
+			for _, err := range valid.Errors {
+				str += err.Key + err.Message + "\r\n"
+			}
+			ctx.JSON(200, NewErrorResult(str))
 			ctx.Abort()
 			return
 		}

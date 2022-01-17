@@ -15,7 +15,7 @@ func RegisterBulletRouters(bullet *gin.RouterGroup) {
 		ctx.JSON(200, service.BulletSearch(ctx.Param("text")))
 	})
 	bullet.GET("/anime/:seasonID", include.ValidateFields(func(valid *validation.Validation, ctx *gin.Context) {
-		valid.Alpha(ctx.Param("seasonID"), "seasonID")
+		valid.Numeric(ctx.Param("seasonID"), "seasonID")
 	}), func(ctx *gin.Context) {
 		seasonID, _ := strconv.Atoi(ctx.Param("seasonID"))
 		ctx.JSON(200, service.BulletAnime(seasonID))

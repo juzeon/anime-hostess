@@ -3,6 +3,7 @@ option go_package = ".;mygrpc";
 package grpc;
 service Bullet{
   rpc SearchAnime(SearchAnimeRequest) returns (SearchAnimeResponse){}
+  rpc GetAnime(AnimeRequest) returns (AnimeResponse){}
 }
 message SearchAnimeRequest{
   string text = 1;
@@ -12,5 +13,16 @@ message SearchAnimeResponse{
 }
 message AnimeEntity{
   int64 seasonID = 1;
+  string title = 2;
+}
+
+message AnimeRequest{
+  int64 seasonID = 1;
+}
+message AnimeResponse{
+  repeated EpisodeEntity data = 1;
+}
+message EpisodeEntity{
+  int64 cid = 1;
   string title = 2;
 }

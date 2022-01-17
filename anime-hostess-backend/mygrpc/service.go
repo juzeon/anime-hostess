@@ -1,7 +1,7 @@
 package mygrpc
 
 import (
-	context "context"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/juzeon/anime-hostess/include"
@@ -11,11 +11,37 @@ import (
 	"google.golang.org/grpc/keepalive"
 	"io"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type BulletService struct {
+}
+
+func (b BulletService) GetAnime(ctx context.Context, request *AnimeRequest) (*AnimeResponse, error) {
+	resp, err := include.SharedHTTPClient.Do(include.CreateHTTPRequest("GET",
+		"https://api.bilibili.com/pgc/view/web/season?season_id="+strconv.Itoa(int(request.SeasonID)), nil))
+	err = include.CheckHTTPError(resp, err)
+	if err != nil {
+		return nil, err
+	}
+	responseBytes, _ := io.ReadAll(resp.Body)
+	var biliAnimeDetail include.BiliAnimeDetail
+	_ = json.Unmarshal(responseBytes, &biliAnimeDetail)
+	if biliAnimeDetail.Code != 0 {
+		return nil, errors.New(biliAnimeDetail.Message)
+	}
+	var episodes []*EpisodeEntity
+	for _, anime := range biliAnimeDetail.Result.Episodes {
+		episodes = append(episodes, &EpisodeEntity{
+			Cid:   int64(anime.Cid),
+			Title: anime.Title + " " + anime.LongTitle,
+		})
+	}
+	return &AnimeResponse{
+		Data: episodes,
+	}, nil
 }
 
 func (b BulletService) SearchAnime(ctx context.Context, request *SearchAnimeRequest) (*SearchAnimeResponse, error) {
