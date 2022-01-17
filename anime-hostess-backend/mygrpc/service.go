@@ -1,15 +1,18 @@
 package mygrpc
 
 import (
+	"compress/flate"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/juzeon/anime-hostess/include"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 	"io"
+	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -17,6 +20,52 @@ import (
 )
 
 type BulletService struct {
+}
+
+func (b BulletService) GetBullets(ctx context.Context, request *BulletRequest) (*BulletResponse, error) {
+	resp, err := include.SharedHTTPClient.Do(include.CreateHTTPRequest("GET",
+		"https://comment.bilibili.com/"+strconv.Itoa(int(request.Cid))+".xml", nil))
+	err = include.CheckHTTPError(resp, err)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	doc, err := goquery.NewDocumentFromReader(flate.NewReader(resp.Body))
+	if err != nil {
+		return nil, err
+	}
+	var bullets []*BulletEntity
+	doc.Find("i d").Each(func(i int, selection *goquery.Selection) {
+		p, _ := selection.Attr("p")
+		arr := strings.Split(p, ",")
+		if len(arr) != 9 {
+			log.Println(p)
+			return
+		}
+		t, _ := strconv.ParseFloat(arr[0], 32)
+		typ, _ := strconv.Atoi(arr[1])
+		size, _ := strconv.Atoi(arr[2])
+		color, _ := strconv.Atoi(arr[3])
+		sentAt, _ := strconv.Atoi(arr[4])
+		poolType, _ := strconv.Atoi(arr[5])
+		sender := arr[6]
+		dmid, _ := strconv.Atoi(arr[7])
+		level, _ := strconv.Atoi(arr[8])
+		bullets = append(bullets, &BulletEntity{
+			Time:     float32(t),
+			Type:     int64(typ),
+			Size:     int64(size),
+			Color:    int64(color),
+			SentAt:   int64(sentAt),
+			PoolType: int64(poolType),
+			Sender:   sender,
+			Dmid:     int64(dmid),
+			Level:    int64(level),
+		})
+	})
+	return &BulletResponse{
+		Data: bullets,
+	}, nil
 }
 
 func (b BulletService) GetAnime(ctx context.Context, request *AnimeRequest) (*AnimeResponse, error) {

@@ -23,3 +23,12 @@ func BulletAnime(seasonID int) include.Result {
 	}
 	return include.NewSuccessResult(res.GetData())
 }
+func BulletBullet(cid int) include.Result {
+	ctx, cancel := include.GetGRPCContext()
+	defer cancel()
+	res, err := mygrpc.BulletClientImpl.GetBullets(ctx, &mygrpc.BulletRequest{Cid: int64(cid)})
+	if err != nil {
+		return include.NewErrorResult("无法获取弹幕：" + err.Error())
+	}
+	return include.NewSuccessResult(res.GetData())
+}

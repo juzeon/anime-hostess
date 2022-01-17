@@ -20,4 +20,10 @@ func RegisterBulletRouters(bullet *gin.RouterGroup) {
 		seasonID, _ := strconv.Atoi(ctx.Param("seasonID"))
 		ctx.JSON(200, service.BulletAnime(seasonID))
 	})
+	bullet.GET("/bullet/:cid", include.ValidateFields(func(valid *validation.Validation, ctx *gin.Context) {
+		valid.Numeric(ctx.Param("cid"), "cid")
+	}), func(ctx *gin.Context) {
+		cid, _ := strconv.Atoi(ctx.Param("cid"))
+		ctx.JSON(200, service.BulletBullet(cid))
+	})
 }
