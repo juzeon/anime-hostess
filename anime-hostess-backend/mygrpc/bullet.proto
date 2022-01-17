@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = ".;mygrpc";
+package grpc;
+service Bullet{
+  rpc SearchAnime(SearchAnimeRequest) returns (SearchAnimeResponse){}
+}
+message SearchAnimeRequest{
+  string text = 1;
+}
+message SearchAnimeResponse{
+  repeated AnimeEntity data = 1;
+}
+message AnimeEntity{
+  int64 seasonID = 1;
+  string title = 2;
+}

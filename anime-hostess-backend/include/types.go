@@ -1,11 +1,10 @@
 package include
 
 import (
-	"flag"
 	"fmt"
 )
 
-var ConfigPath string
+var ConfigPath *string
 
 type Result struct {
 	Status bool        `json:"status"`
@@ -45,9 +44,4 @@ type Video struct {
 type Series struct {
 	Name   string  `json:"name"`
 	Videos []Video `json:"videos"`
-}
-
-func init() {
-	flag.Parse()
-	ConfigPath = *flag.String("c", "", "configuration path")
 }

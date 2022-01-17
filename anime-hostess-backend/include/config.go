@@ -1,6 +1,7 @@
 package include
 
 import (
+	"fmt"
 	"gopkg.in/ini.v1"
 	"log"
 )
@@ -10,13 +11,11 @@ type configStruct struct {
 	Debug      bool   `ini:"debug"`
 	VideoRoot  string `ini:"video-root"`
 	VideoTypes string `ini:"video-types"`
+	AsGRPC     bool   `ini:"as-grpc"`
+	GRPCServer string `ini:"grpc-server"`
 }
 
 var Config *configStruct
-
-func init() {
-	LoadConfig()
-}
 
 func LoadConfig() {
 	// set default config
@@ -24,11 +23,13 @@ func LoadConfig() {
 		Port:       9777,
 		Debug:      true,
 		VideoRoot:  ".",
-		VideoTypes: "mp4,flv",
+		VideoTypes: "mp4,flv,mov,mkv",
+		AsGRPC:     false,
+		GRPCServer: "",
 	}
 	configPath := "config.ini"
-	if ConfigPath != "" {
-		configPath = ConfigPath
+	if *ConfigPath != "" {
+		configPath = *ConfigPath
 	}
 	cfg, err := ini.InsensitiveLoad(configPath)
 	if err != nil {
@@ -38,5 +39,6 @@ func LoadConfig() {
 		if err != nil {
 			panic(err)
 		}
+		fmt.Printf("%#v\n", Config)
 	}
 }

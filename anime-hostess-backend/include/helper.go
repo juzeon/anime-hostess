@@ -2,6 +2,7 @@ package include
 
 import (
 	"bytes"
+	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/beego/beego/v2/adapter/validation"
@@ -12,6 +13,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var allSeries []Series
@@ -106,4 +108,7 @@ func ValidateFields(validateFun func(valid *validation.Validation, ctx *gin.Cont
 			return
 		}
 	}
+}
+func GetGRPCContext() (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), 15*time.Second)
 }

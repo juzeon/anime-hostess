@@ -8,14 +8,13 @@ import (
 	"net/http"
 )
 
-func RegisterVideoRouter(rg *gin.RouterGroup) {
-	rg.GET("/list", func(ctx *gin.Context) {
+func RegisterVideoRouters(video *gin.RouterGroup) {
+	video.GET("/list", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, service.VideoList())
 	})
-	rg.GET("/stream/:hash", include.ValidateFields(func(valid *validation.Validation, ctx *gin.Context) {
+	video.GET("/stream/:hash", include.ValidateFields(func(valid *validation.Validation, ctx *gin.Context) {
 		valid.Required(ctx.Param("hash"), "hash")
 	}), func(ctx *gin.Context) {
-		hash := ctx.Param("hash")
-		service.VideoStream(hash, ctx)
+		service.VideoStream(ctx.Param("hash"), ctx)
 	})
 }
