@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/juzeon/anime-hostess/include"
 )
 
@@ -10,4 +11,16 @@ func VideoList() include.Result {
 		return include.NewErrorResult(err)
 	}
 	return include.NewSuccessResult(series)
+}
+func VideoStream(hash string, ctx *gin.Context) {
+	path, ok := include.Hash2PathMap[hash]
+	if !ok {
+		_, _ = include.GetAllSeries(true)
+		path, ok = include.Hash2PathMap[hash]
+	}
+	if !ok {
+		ctx.JSON(200, include.NewErrorResult("hash不存在"))
+		return
+	}
+	ctx.File(path)
 }

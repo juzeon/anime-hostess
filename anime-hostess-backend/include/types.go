@@ -39,6 +39,7 @@ type Video struct {
 	SeriesName string `json:"seriesName"`
 	Name       string `json:"name"`
 	Path       string `json:"path"`
+	Hash       string `json:"hash"`
 }
 
 type Series struct {
