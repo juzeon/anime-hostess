@@ -1,0 +1,5 @@
+# grpc服务端口号
+port = 9666
+
+# 该服务是否为grpc服务，主服务为false，grpc服务为true
+as-grpc = true

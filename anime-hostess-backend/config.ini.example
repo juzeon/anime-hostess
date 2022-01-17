@@ -1,0 +1,17 @@
+# 主服务端口号
+port = 9777
+
+# 是否启用debug模式
+debug = true
+
+# 视频存放路径。该路径中包含一系列子文件夹，每个子文件夹的根目录并列存放视频文件
+video-root = "/path/to/your/videos"
+
+# 扫描文件夹时识别为视频的扩展名
+video-types = "mp4,flv,mov,mkv"
+
+# grpc服务地址与端口
+grpc-server = "127.0.0.1:9666"
+
+# 该服务是否为grpc服务，主服务为false，grpc服务为true
+as-grpc = false
