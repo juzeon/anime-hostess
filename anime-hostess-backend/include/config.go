@@ -39,6 +39,6 @@ func LoadConfig() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%#v\n", Config)
+		fmt.Printf("LoadConfig: %#v\n", Config)
 	}
 }
