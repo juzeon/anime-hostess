@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="apple-touch-icon" href="<%= BASE_URL %>logo-apple.png">
+    <meta name="apple-mobile-web-app-title" content="Anime">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+<noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
+<!-- built files will be auto injected -->
+<script>
+    window.onload = function () {
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault()
+            }
+        })
+        let lastTouchEnd = 0
+        document.addEventListener('touchend', function (event) {
+            let now = (new Date()).getTime()
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault()
+            }
+            lastTouchEnd = now
+        }, false)
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault()
+        })
+    }
+</script>
+</body>
+</html>
