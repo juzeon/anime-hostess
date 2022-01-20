@@ -58,3 +58,9 @@ npm run build
 ### 配置
 
 在设定界面，填入主服务端的地址。点击更新后即可使用。
+
+## 截图
+
+![](https://i.imgur.com/Rfo2zi5.png)
+
+![](https://i.imgur.com/75DFluU.png)
