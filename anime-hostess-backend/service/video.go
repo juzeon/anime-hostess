@@ -12,6 +12,17 @@ func VideoList() include.Result {
 	}
 	return include.NewSuccessResult(series)
 }
+func VideoDetail(hash string) include.Result {
+	series, ok := include.Hash2SeriesMap[hash]
+	if !ok {
+		_, _ = include.GetAllSeries(true)
+		series, ok = include.Hash2SeriesMap[hash]
+	}
+	if !ok {
+		return include.NewErrorResult("hash不存在")
+	}
+	return include.NewSuccessResult(series)
+}
 func VideoStream(hash string, ctx *gin.Context) {
 	path, ok := include.Hash2PathMap[hash]
 	if !ok {

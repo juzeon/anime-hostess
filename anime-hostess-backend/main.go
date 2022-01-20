@@ -26,6 +26,7 @@ func initializeMaster() {
 	}
 	gin.SetMode(mode)
 	server := gin.Default()
+	server.Use(include.CORS())
 	videoRouter := server.Group("/video")
 	router.RegisterVideoRouters(videoRouter)
 	bulletRouter := server.Group("/bullet")

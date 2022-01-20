@@ -11,6 +11,11 @@ func RegisterVideoRouters(video *gin.RouterGroup) {
 	video.GET("/list", func(ctx *gin.Context) {
 		ctx.JSON(200, service.VideoList())
 	})
+	video.GET("/detail/:hash", include.ValidateFields(func(valid *validation.Validation, ctx *gin.Context) {
+		valid.Required(ctx.Param("hash"), "hash")
+	}), func(ctx *gin.Context) {
+		ctx.JSON(200, service.VideoDetail(ctx.Param("hash")))
+	})
 	video.GET("/stream/:hash", include.ValidateFields(func(valid *validation.Validation, ctx *gin.Context) {
 		valid.Required(ctx.Param("hash"), "hash")
 	}), func(ctx *gin.Context) {

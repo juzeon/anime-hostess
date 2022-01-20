@@ -61,6 +61,7 @@ func (b BulletService) GetBullets(ctx context.Context, request *BulletRequest) (
 			Sender:   sender,
 			Dmid:     int64(dmid),
 			Level:    int64(level),
+			Text:     selection.Text(),
 		})
 	})
 	return &BulletResponse{

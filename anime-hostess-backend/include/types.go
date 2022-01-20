@@ -37,11 +37,12 @@ func NewErrorResult(data interface{}) Result {
 type Video struct {
 	SeriesName string `json:"seriesName"`
 	Name       string `json:"name"`
-	Path       string `json:"path"`
+	Path       string `json:"-"`
 	Hash       string `json:"hash"`
 }
 
 type Series struct {
 	Name   string  `json:"name"`
 	Videos []Video `json:"videos"`
+	Hash   string  `json:"hash"`
 }

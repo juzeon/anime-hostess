@@ -6,10 +6,10 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/beego/beego/v2 v2.0.1
 	github.com/gin-gonic/gin v1.7.7
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.5.0
 	github.com/pkg/errors v0.9.1
 	google.golang.org/grpc v1.43.0
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/protobuf v1.27.1
 	gopkg.in/ini.v1 v1.66.2
 )
 

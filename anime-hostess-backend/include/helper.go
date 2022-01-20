@@ -17,6 +17,7 @@ import (
 )
 
 var allSeries []Series
+var Hash2SeriesMap = map[string]*Series{}
 
 func GetAllSeries(force bool) (series []Series, err error) {
 	if len(allSeries) != 0 && force == false {
@@ -41,10 +42,13 @@ func GetAllSeries(force bool) (series []Series, err error) {
 		if len(videos) == 0 {
 			continue
 		}
+		hash := MD5([]byte(fileInfo.Name()))
 		singleSeries := Series{
 			Name:   fileInfo.Name(),
 			Videos: videos,
+			Hash:   hash,
 		}
+		Hash2SeriesMap[hash] = &singleSeries
 		series = append(series, singleSeries)
 	}
 	allSeries = series
@@ -115,4 +119,17 @@ func ValidateFields(validateFun func(valid *validation.Validation, ctx *gin.Cont
 }
 func GetGRPCContext() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 15*time.Second)
+}
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, OPTIONS, PATCH")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
 }

@@ -29,19 +29,20 @@ message EpisodeEntity{
 }
 
 message BulletRequest{
-  int64 cid=1;
+  int64 cid = 1;
 }
 message BulletResponse{
-  repeated BulletEntity data=1;
+  repeated BulletEntity data = 1;
 }
 message BulletEntity{
-  float time=1;
-  int64 type=2;
-  int64 size=3;
-  int64 color=4;
-  int64 sentAt=5;
-  int64 poolType=6;
-  string sender=7;
-  int64 dmid=8;
-  int64 level=9;
+  float time = 1;
+  int64 type = 2;
+  int64 size = 3;
+  int64 color = 4;
+  int64 sentAt = 5;
+  int64 poolType = 6;
+  string sender = 7;
+  int64 dmid = 8;
+  int64 level = 9;
+  string text = 10;
 }
