@@ -11,14 +11,6 @@ export class Helper {
         }
     }
 
-    translateAnimeEngine(module: string) {
-        return store.state.engineModule?.anime.find(value => value.module === module)?.name || module
-    }
-
-    translateDanmakuEngine(module: string) {
-        return store.state.engineModule?.danmaku.find(value => value.module === module)?.name || module
-    }
-
     getAnimeTokenFromUrl(url: string) {
         return /\/anime\/(.*)/.exec(url)![1]
     }

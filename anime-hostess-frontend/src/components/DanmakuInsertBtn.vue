@@ -11,7 +11,7 @@
         <v-card-text>
           <v-chip color="pink" outlined class="ml-3 mt-3" v-for="(danmakuEpisode,index) in danmakuEpisodeList"
                   :key="index" @click="insertDanmaku(danmakuEpisode)">
-            {{ danmakuEpisode.name }}
+            {{ danmakuEpisode.title }}
           </v-chip>
         </v-card-text>
         <v-divider></v-divider>
@@ -28,12 +28,12 @@
 
 <script lang="ts">
 import Vue from "vue"
-import {IDanmakuEpisode} from "@/types"
+import {IBulletRaw, IDanmakuEpisode} from "@/types"
 import {BulletOption} from "@nplayer/danmaku/dist/src/ts/danmaku/bullet"
 
 export default Vue.extend({
   name: "DanmakuInsertBtn",
-  props: ['url', 'title'],
+  props: ['seasonID', 'title'],
   data() {
     return {
       dialog: false,
@@ -50,8 +50,8 @@ export default Vue.extend({
     },
     getDanmakuEpisodeList() {
       this.loading = true
-      this.$axios.get(this.url).then(res => {
-        this.danmakuEpisodeList = res.data
+      this.$axios.get('bullet/anime/'+this.seasonID).then(res => {
+        this.danmakuEpisodeList = res.data.data
         this.loading = false
       })
     },
@@ -59,22 +59,28 @@ export default Vue.extend({
       this.loading = true
 
       interface IPosMap {
-        [key: number]: string
+        [key: number]: "scroll" | "top" | "bottom"
       }
 
-      let posMap = {
-        0: 'scroll',
-        1: 'top',
-        2: 'bottom'
+      let posMap={
+        1:'scroll',
+        2:'scroll',
+        3:'scroll',
+        4:'bottom',
+        5:'top',
+        6:'top',
+        7:'top',
+        8:'scroll',
+        9:'scroll',
       } as IPosMap
-      this.$axios.get(danmakuEpisode.data).then(res => {
-        let arr = res.data.data
+      this.$axios.get('bullet/bullet/'+danmakuEpisode.cid).then(res => {
+        let arr = res.data.data as IBulletRaw[]
         let bulletsArr = [] as BulletOption[]
         for (let single of arr) {
-          let time = single[0]
-          let type = posMap[single[1]] as "scroll" | "top" | "bottom"
-          let color = '#' + single[2].toString(16)
-          let text = single[4]
+          let time = single.time
+          let type = posMap[single.type]
+          let color = '#' + single.color.toString(16)
+          let text = single.text
           bulletsArr.push({
             color,
             text,

@@ -1,48 +1,69 @@
 <template>
-  <div class="d-flex justify-center align-center" style="width: 98%;height: 98%;">
-    <v-card width="800" height="400" elevation="3" class="d-flex align-center">
-      <v-row>
-        <v-col cols="12" class="d-flex justify-center">
-          <v-img src="https://img14.360buyimg.com/ddimg/jfs/t1/208970/36/2976/2479/6156a3fcEe432683d/f6cf924b25e69f6b.png" max-width="100"></v-img>
-        </v-col>
-        <v-col cols="12" class="d-flex justify-center">
-          <p class="text-h4">Anime</p>
-        </v-col>
-        <v-col cols="10" offset="1" class="mt-6">
-          <search-bar v-model="searchText" @search="navigateToSearch"></search-bar>
-        </v-col>
-      </v-row>
+  <focus-area>
+    <v-card>
+      <v-card-title>
+        伺服器上的影片资料夹
+      </v-card-title>
+      <search-bar class="mx-7" v-model="searchText"></search-bar>
+      <v-expansion-panels>
+        <v-expansion-panel v-for="(item,index) in filteredSeries" :key="'series-'+index">
+          <v-expansion-panel-header>
+            {{item.name}}
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-list>
+              <v-list-item v-for="(episode,index2) in item.videos" :key="'episode-'+index+'-'+index2">
+                <v-list-item-title>
+                  <v-btn text @click="navigateToWatch(item.hash,episode.hash)">{{episode.name}}</v-btn>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-card>
-  </div>
+  </focus-area>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import FocusArea from "@/components/FocusArea.vue"
+import {ISeries} from "@/types"
 import SearchBar from "@/components/SearchBar.vue"
-import * as vuex from 'vuex'
 
 export default Vue.extend({
   name: 'Index',
-  components: {SearchBar},
+  components: {SearchBar, FocusArea},
   metaInfo: {
     title: '主页'
   },
-  computed: {
-    searchText: {
-      set(value: string) {
-        this.$store.commit('setSearchText', value)
-      },
-      get() {
-        return this.$store.state.searchText
-      }
-    }
+  mounted() {
+    this.getSeriesList()
   },
   data() {
-    return {}
+    return {
+      searchText:'',
+      series:[] as ISeries[],
+    }
+  },
+  computed:{
+    filteredSeries():ISeries[]{
+      if(this.searchText.length===0){
+        return this.series
+      }
+      return this.series.filter(item=>{
+        return item.name.includes(this.searchText)
+      })
+    }
   },
   methods: {
-    navigateToSearch() {
-      this.$router.push({name: 'Search', params: {searchTextPassed: this.searchText}})
+    navigateToWatch(seriesHash:string,hash:string){
+      this.$router.push({name:'Watch',params:{seriesHash,hash}})
+    },
+    getSeriesList(){
+      this.$axios.get('video/list').then(res=>{
+        this.series = res.data.data
+      })
     }
   }
 })

@@ -1,23 +1,21 @@
 <template>
   <focus-area>
-    <v-progress-linear indeterminate v-show="!animeDetail || !watchInfo"></v-progress-linear>
+    <v-progress-linear indeterminate v-show="!episodeDetail"></v-progress-linear>
     <p class="text-h6">
-      <v-btn icon @click="navigateToAnime">
+      <v-btn icon @click="navigateToIndex">
         <v-icon>mdi-arrow-left-circle-outline</v-icon>
       </v-btn>
-      {{ (this.animeDetail) ? '第' + (parseInt(this.episode) + 1) + '集 - ' + this.animeDetail.title : '观看影片' }}
-      &nbsp;
-      {{ '（' + ((this.watchInfo) ? this.watchInfo.format : '加载中') + (this.useProxy ? ', proxy' : '') + '）' }}
+      {{ (episodeDetail) ? episodeDetail.name + ' - ' + episodeDetail.seriesName : '观看影片' }}
     </p>
-    <div v-show="this.watchInfo">
+    <div v-show="episodeDetail">
       <v-row>
         <v-col cols="10" offset="1">
           <NPlayer :set="setPlayer" :options="playerDefaultOptions"></NPlayer>
         </v-col>
       </v-row>
-      <v-card class="mt-5 pa-4" v-if="playList">
+      <v-card class="mt-5 pa-4">
         <p class="text-h6 ml-3 mt-3">选集</p>
-        <play-list :name="playList.name" :video-list="playList.video_list"></play-list>
+        <play-list v-if="animeDetail" :series-hash="animeDetail.hash" :videos="animeDetail.videos"></play-list>
       </v-card>
       <v-card class="mt-5" :loading="danmakuLoading">
         <p class="text-h6 ml-3 mt-3">添加弹幕</p>
@@ -25,12 +23,9 @@
         <v-list-item v-for="(danmakuSource,index) in danmakuSourceList" :key="'danmakuSource-'+index" two-line>
           <v-list-item-content>
             <v-list-item-title>{{ danmakuSource.title }}</v-list-item-title>
-            <v-list-item-subtitle>
-              {{ $helper.translateDanmakuEngine(danmakuSource.module) }}（含{{ danmakuSource.num }}集）
-            </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <danmaku-insert-btn :title="danmakuSource.title" :url="danmakuSource.url"
+            <danmaku-insert-btn :title="danmakuSource.title" :seasonID="danmakuSource.seasonID"
                                 @insertDanmaku="insertDanmaku"></danmaku-insert-btn>
           </v-list-item-action>
         </v-list-item>
@@ -47,15 +42,13 @@
 <script lang="ts">
 import Vue from "vue"
 import FocusArea from "../components/FocusArea.vue"
-import {IAnimeDetail, IDanmakuSource, IPlayListOfAnimeDetail, IWatchInfo} from "@/types"
+import {IAnimeDetail, IBulletSeries, IEpisode} from "@/types"
 import {MetaInfo} from "vue-meta"
 import {EVENT, Player, PlayerOptions} from "nplayer"
-import Hls from "hls.js"
 import Danmaku from '@nplayer/danmaku'
 import {BulletOption} from "@nplayer/danmaku/dist/src/ts/danmaku/bullet"
 import SearchBar from "@/components/SearchBar.vue"
 import DanmakuInsertBtn from "@/components/DanmakuInsertBtn.vue"
-import axios from "axios"
 import ForbidDanmakuCard from "@/components/ForbidDanmakuCard.vue"
 import * as vuex from 'vuex'
 import PlayList from "@/components/PlayList.vue"
@@ -63,27 +56,21 @@ import PlayList from "@/components/PlayList.vue"
 export default Vue.extend({
   name: "Watch",
   components: {PlayList, ForbidDanmakuCard, DanmakuInsertBtn, SearchBar, FocusArea},
-  props: ['token', 'playlist', 'episode'],
+  props: ['hash', 'seriesHash'],
   metaInfo(): MetaInfo {
     return {
-      title: (this.animeDetail) ? '第' + (parseInt(this.episode) + 1) + '集 - ' + this.animeDetail.title : '观看影片'
+      title: (this.episodeDetail) ? this.episodeDetail.name + ' - ' + this.episodeDetail.seriesName : '观看影片'
     }
   },
   computed: {
     routerProps(): string {
-      return this.token + '-' + this.playlist + '-' + this.episode
+      return this.hash + '-' + this.seriesHash
     },
-    playList(): IPlayListOfAnimeDetail | null {
-      if (!this.animeDetail) {
-        return null
-      }
-      return this.animeDetail.play_lists[parseInt(this.playlist)]
-    },
-    ...vuex.mapState(['forbidDanmakuList', 'customDanmakuOptions'])
+    ...vuex.mapState(['forbidDanmakuList', 'customDanmakuOptions', 'baseUrl'])
   },
   data() {
     return {
-      watchInfo: undefined as IWatchInfo | undefined,
+      episodeDetail: undefined as IEpisode | undefined,
       animeDetail: undefined as IAnimeDetail | undefined,
       player: undefined as Player | undefined,
       playerDefaultOptions: {
@@ -98,12 +85,11 @@ export default Vue.extend({
           })
         ]
       } as PlayerOptions,
-      danmakuSourceList: [] as IDanmakuSource[],
+      danmakuSourceList: [] as IBulletSeries[],
       danmakuListUnfiltered: [] as BulletOption[],
       danmakuListFiltered: [] as BulletOption[],
       danmakuSearchInput: '',
       danmakuLoading: false,
-      useProxy: false,
       historyTimeLogger: undefined as number | undefined,
       firstPlay: true
     }
@@ -121,42 +107,30 @@ export default Vue.extend({
     this.$destroy()
   },
   methods: {
-    navigateToAnime() {
-      this.$router.push({name: 'Anime', params: {token: this.token}})
+    navigateToIndex() {
+      this.$router.push({name: 'Index'})
     },
     setPlayer(player: Player) {
       this.player = player
     },
     loadVideo() {
-      console.log('load video type: ' + this.watchInfo?.format + ', use proxy: ' + this.useProxy)
-      let videoUrl = this.useProxy ? this.watchInfo!.proxy_url : this.watchInfo!.raw_url
-      if (this.watchInfo?.format === 'hls') {
-        let hls = new Hls()
-        hls.attachMedia(this.player!.video)
-        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-          hls.loadSource(videoUrl)
-        })
-      } else {
-        this.player?.updateOptions({src: videoUrl})
-      }
+      let videoUrl = this.baseUrl + 'video/stream/' + this.episodeDetail?.hash
+      this.player?.updateOptions({src: videoUrl})
     },
     initWatch() {
       this.animeDetail = undefined
-      this.watchInfo = undefined
+      this.episodeDetail = undefined
       this.danmakuListFiltered = []
       this.danmakuListUnfiltered = []
       clearInterval(this.historyTimeLogger)
       this.firstPlay = true
       this.player?.danmaku.resetItems([])
-      this.useProxy = false
-
-      this.$axios.get("anime/" + this.token).then(res => {
-        this.animeDetail = res.data
-        this.danmakuSearchInput = this.animeDetail!.title
+      this.$axios.get("video/detail/" + this.seriesHash).then(res => {
+        this.animeDetail = res.data.data
+        this.danmakuSearchInput = this.animeDetail!.name
         this.getDanmakuSourceList()
-      })
-      this.$axios.get('anime/' + this.token + '/' + this.playlist + '/' + this.episode).then(res => {
-        this.watchInfo = res.data
+        this.episodeDetail = this.animeDetail!.videos.find(video => video.hash === this.hash)
+        this.loadVideo()
         this.player?.on(EVENT.ERROR, () => {
           this.loadVideo()
         })
@@ -167,7 +141,7 @@ export default Vue.extend({
           if (!this.firstPlay) {
             return
           }
-          let historyTimeKey = this.token + '_' + this.episode
+          let historyTimeKey = this.hash + '_' + this.seriesHash
           let historyTime = localStorage.getItem(historyTimeKey)
           console.log('history time: ' + historyTime)
           if (historyTime) {
@@ -179,18 +153,12 @@ export default Vue.extend({
           }, 1000)
           this.firstPlay = false
         })
-        return axios.head(this.watchInfo!.raw_url)
-      }).then(res => {
-        this.loadVideo()
-      }).catch(err => {
-        this.useProxy = true
-        this.loadVideo()
       })
     },
     getDanmakuSourceList() {
       this.danmakuLoading = true
-      this.$axios.get('danmaku/search/' + encodeURI(this.danmakuSearchInput)).then(res => {
-        this.danmakuSourceList = res.data
+      this.$axios.get('bullet/search/' + encodeURI(this.danmakuSearchInput)).then(res => {
+        this.danmakuSourceList = res.data.data
         this.danmakuLoading = false
       })
     },

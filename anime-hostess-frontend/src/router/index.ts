@@ -2,8 +2,6 @@ import Vue from 'vue'
 import VueRouter, {RouteConfig} from 'vue-router'
 import Index from '@/views/Index.vue'
 import Settings from "@/views/Settings.vue"
-import Search from "@/views/Search.vue"
-import Anime from "@/views/Anime.vue"
 import Watch from "@/views/Watch.vue"
 
 Vue.use(VueRouter)
@@ -20,19 +18,7 @@ const routes: Array<RouteConfig> = [
         component: Settings
     },
     {
-        path: '/search/:searchTextPassed',
-        name: 'Search',
-        component: Search,
-        props: true
-    },
-    {
-        path: '/anime/:token',
-        name: 'Anime',
-        component: Anime,
-        props: true
-    },
-    {
-        path: '/watch/:token/:playlist/:episode',
+        path: '/watch/:seriesHash/:hash',
         name: 'Watch',
         component: Watch,
         props: true

@@ -8,38 +8,32 @@ export interface IAnimeBySearch {
     url: string
 }
 
-export interface IEngineModule {
-    anime: IAnimeItemOfEngineModule[],
-    danmaku: IDanmakuItemOfEngineModule[],
-    comic: any[],
-    music: any[]
-}
-
-export interface IAnimeItemOfEngineModule {
-    enable: boolean,
-    module: string,
-    name: string,
-    notes: string,
-    quality: number,
-    type: string[]
-}
-
-export interface IDanmakuItemOfEngineModule {
-    enable: boolean,
-    module: string,
-    name: string,
-    notes: string,
-    quality: number
-}
-
 export interface IAnimeDetail {
-    title: string;
-    category: string;
-    cover_url: string;
-    description: string;
-    module: string;
-    play_lists: IPlayListOfAnimeDetail[];
+    name: string;
+    videos: IEpisode[];
+    hash: string;
 }
+
+export interface IEpisode {
+    seriesName: string;
+    name: string;
+    path: string;
+    hash: string;
+}
+
+export interface ISeries {
+    name: string;
+    videos: IVideo[];
+    hash: string;
+}
+
+export interface IVideo {
+    seriesName: string;
+    name: string;
+    path: string;
+    hash: string;
+}
+
 
 export interface IPlayListOfAnimeDetail {
     name: string;
@@ -59,27 +53,28 @@ export interface IVideoExploded {
     episode: number
 }
 
-export interface IWatchInfo {
-    format: string;
-    lifetime: number;
-    proxy_url: string;
-    raw_url: string;
-    size: number;
-}
-
-export interface IDanmakuSource {
-    module: string;
-    num: number;
-    score: number;
+export interface IBulletSeries {
+    seasonID: number;
     title: string;
-    url: string;
 }
 
 export interface IDanmakuEpisode {
-    data: string;
-    name: string;
-    url: string;
+    cid: number
+    title: string
 }
+
+export interface IBulletRaw {
+    time: number;
+    type: number;
+    size: number;
+    color: number;
+    sentAt: number;
+    sender: string;
+    dmid: number;
+    level: number;
+    text: string;
+}
+
 
 export interface ICustomDanmakuOptions {
     disable: boolean,
