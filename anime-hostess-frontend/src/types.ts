@@ -64,15 +64,15 @@ export interface IDanmakuEpisode {
 }
 
 export interface IBulletRaw {
-    time: number;
-    type: number;
-    size: number;
-    color: number;
-    sentAt: number;
-    sender: string;
-    dmid: number;
-    level: number;
-    text: string;
+    time?: number;
+    type?: number;
+    size?: number;
+    color?: number;
+    sentAt?: number;
+    sender?: string;
+    dmid?: number;
+    level?: number;
+    text?: string;
 }
 
 

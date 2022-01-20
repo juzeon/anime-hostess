@@ -77,10 +77,10 @@ export default Vue.extend({
         let arr = res.data.data as IBulletRaw[]
         let bulletsArr = [] as BulletOption[]
         for (let single of arr) {
-          let time = single.time
-          let type = posMap[single.type]
-          let color = '#' + single.color.toString(16)
-          let text = single.text
+          let time = single.time || 0
+          let type = posMap[single.type || 1]
+          let color = '#' + single.color?.toString(16) || 'ffffff'
+          let text = single.text || ''
           bulletsArr.push({
             color,
             text,
