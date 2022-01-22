@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"github.com/beego/beego/v2/adapter/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"io"
@@ -102,20 +101,12 @@ func MD5(data []byte) string {
 	_, _ = io.Copy(instance, bytes.NewReader(data))
 	return hex.EncodeToString(instance.Sum(nil))
 }
-func ValidateFields(validateFun func(valid *validation.Validation, ctx *gin.Context)) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		valid := &validation.Validation{}
-		validateFun(valid, ctx)
-		if valid.HasErrors() {
-			str := ""
-			for _, err := range valid.Errors {
-				str += err.Key + err.Message + "\r\n"
-			}
-			ctx.JSON(200, NewErrorResult(str))
-			ctx.Abort()
-			return
-		}
+func GetUserIDFromContext(ctx *gin.Context) int {
+	id, ok := ctx.Get("UserID")
+	if !ok {
+		panic("UserID field not exist")
 	}
+	return id.(int)
 }
 func GetGRPCContext() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 15*time.Second)

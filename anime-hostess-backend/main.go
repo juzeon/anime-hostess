@@ -6,9 +6,9 @@ import (
 	"github.com/juzeon/anime-hostess/include"
 	"github.com/juzeon/anime-hostess/mygrpc"
 	"github.com/juzeon/anime-hostess/router"
+	"github.com/juzeon/anime-hostess/store"
 	"google.golang.org/grpc"
 	"net"
-	"strconv"
 )
 
 func main() {
@@ -20,6 +20,7 @@ func main() {
 }
 func initializeMaster() {
 	mygrpc.ConnectServer()
+	store.ConnectRedisServer()
 	mode := "release"
 	if include.Config.Debug {
 		mode = "debug"
@@ -31,19 +32,21 @@ func initializeMaster() {
 	router.RegisterVideoRouters(videoRouter)
 	bulletRouter := server.Group("/bullet")
 	router.RegisterBulletRouters(bulletRouter)
-	err := server.Run(":" + strconv.Itoa(include.Config.Port))
+	userRouter := server.Group("/user")
+	router.RegisterUserRouters(userRouter)
+	err := server.Run(include.Config.Listen)
 	if err != nil {
 		panic(err)
 	}
 }
 func initializeGRPC() {
-	listener, err := net.Listen("tcp", ":"+strconv.Itoa(include.Config.Port))
+	listener, err := net.Listen("tcp", include.Config.Listen)
 	if err != nil {
 		panic(err)
 	}
 	grpcServer := grpc.NewServer()
 	mygrpc.RegisterBulletServer(grpcServer, mygrpc.BulletService{})
-	fmt.Println("Started grpc server at port " + strconv.Itoa(include.Config.Port))
+	fmt.Println("Started grpc server at " + include.Config.Listen)
 	err = grpcServer.Serve(listener)
 	if err != nil {
 		panic(err)

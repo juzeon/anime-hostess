@@ -14,7 +14,7 @@
 
 ```bash
 cd anime-hostess-backend
-go build
+go build -ldflags="-s -w"
 ```
 
 ### 部署gRPC服务端

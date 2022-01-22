@@ -1,5 +1,5 @@
-# 主服务端口号
-port = 9777
+# 主服务监听地址
+listen = 0.0.0.0:9777
 
 # 是否启用debug模式
 debug = true
@@ -15,3 +15,9 @@ grpc-server = "127.0.0.1:9666"
 
 # 该服务是否为grpc服务，主服务为false，grpc服务为true
 as-grpc = false
+
+# Redis服务地址与端口
+redis-server = "127.0.0.1:6379"
+
+# Redis服务密码（默认为空密码）
+redis-password = ""

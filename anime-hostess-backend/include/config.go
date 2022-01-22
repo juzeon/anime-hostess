@@ -7,12 +7,14 @@ import (
 )
 
 type configStruct struct {
-	Port       int    `ini:"port"`
-	Debug      bool   `ini:"debug"`
-	VideoRoot  string `ini:"video-root"`
-	VideoTypes string `ini:"video-types"`
-	AsGRPC     bool   `ini:"as-grpc"`
-	GRPCServer string `ini:"grpc-server"`
+	Listen        string `ini:"listen"`
+	Debug         bool   `ini:"debug"`
+	VideoRoot     string `ini:"video-root"`
+	VideoTypes    string `ini:"video-types"`
+	AsGRPC        bool   `ini:"as-grpc"`
+	GRPCServer    string `ini:"grpc-server"`
+	RedisServer   string `ini:"redis-server"`
+	RedisPassword string `ini:"redis-password"`
 }
 
 var Config *configStruct
@@ -20,12 +22,14 @@ var Config *configStruct
 func LoadConfig() {
 	// set default config
 	Config = &configStruct{
-		Port:       9777,
-		Debug:      true,
-		VideoRoot:  ".",
-		VideoTypes: "mp4,flv,mov,mkv",
-		AsGRPC:     false,
-		GRPCServer: "",
+		Listen:        "0.0.0.0:9777",
+		Debug:         true,
+		VideoRoot:     ".",
+		VideoTypes:    "mp4,flv,mov,mkv",
+		AsGRPC:        false,
+		GRPCServer:    "",
+		RedisServer:   "127.0.0.1:6379",
+		RedisPassword: "",
 	}
 	configPath := "config.ini"
 	if *ConfigPath != "" {
