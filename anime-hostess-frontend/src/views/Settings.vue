@@ -6,7 +6,7 @@
         <v-text-field label="API地址" v-model="baseUrl" :rules="[validateBaseUrl]"></v-text-field>
         <div class="d-flex align-baseline">
           <v-text-field label="使用者识别码" v-model="userKey"></v-text-field>
-          <v-btn class="ml-3" @click="generateUserKey">获取新的</v-btn>
+          <v-btn class="ml-3" @click="generateUserKey" :loading="genUserKeyLoading">获取新的</v-btn>
         </div>
         <p class="caption">使用者识别码用于在伺服器上储存浏览记录、播放记录等资讯，以便多装置同步。请妥善保存以免记录丢失。</p>
         <v-btn block :disabled="!inputValid" @click="applySettings" :loading="btnLoading">更新</v-btn>
@@ -33,7 +33,8 @@ export default Vue.extend({
       inputValid: false,
       baseUrl: this.$store.state.baseUrl,
       userKey: this.$store.state.userKey,
-      btnLoading: false
+      btnLoading: false,
+      genUserKeyLoading: false,
     }
   },
   methods: {
@@ -43,15 +44,17 @@ export default Vue.extend({
       this.$store.commit('setUserKey', this.userKey)
       this.$axios.defaults.baseURL = this.baseUrl
       this.$axios.defaults.headers['Authorization'] = this.userKey
-      this.$swal.success('设定已更新').then(()=>{
+      this.$swal.success('设定已更新').then(() => {
         this.btnLoading = false
       })
     },
-    generateUserKey(){
-      this.$swal.confirm('是否获取新的识别码并覆盖旧的？').then(res=>{
-        if(res.isConfirmed){
-          this.$axios.post('user/generate').then(res=>{
+    generateUserKey() {
+      this.$swal.confirm('是否获取新的识别码并覆盖旧的？').then(res => {
+        if (res.isConfirmed) {
+          this.genUserKeyLoading = true
+          this.$axios.post('user/generate').then(res => {
             this.userKey = res.data.data.token
+            this.genUserKeyLoading = false
           })
         }
       })

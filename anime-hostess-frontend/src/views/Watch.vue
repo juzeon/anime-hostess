@@ -141,10 +141,10 @@ export default Vue.extend({
       this.$axios.get('user/searchText/' + this.seriesHash).then(res => {
         this.danmakuSearchInput = res.data.data
         this.danmakuSearchInputLoading = false
+        this.getDanmakuSourceList()
       })
       this.$axios.get("video/detail/" + this.seriesHash).then(res => {
         this.animeDetail = res.data.data
-        this.getDanmakuSourceList()
         this.episodeDetail = this.animeDetail!.videos.find(video => video.hash === this.hash)
         this.loadVideo()
         this.player!.on(EVENT.ERROR, () => {
