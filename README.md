@@ -4,6 +4,8 @@
 
 ![](https://i.imgur.com/U3XfrCj.png)
 
+前端演示地址：<https://anime-hostess.pages.dev>
+
 ## 后端部署
 
 后端采用 Go + gRPC 开发。
