@@ -1,3 +1,4 @@
 ﻿anime-hostess-backend/.idea
 anime-hostess-backend/config.ini
 anime-hostess-backend/config.grpc.ini
+anime-hostess-backend/deploy.bat
