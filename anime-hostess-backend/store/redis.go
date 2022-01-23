@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/juzeon/anime-hostess/include"
 	"strconv"
@@ -17,6 +18,7 @@ func ConnectRedisServer() {
 		Addr:     include.Config.RedisServer,
 		Password: include.Config.RedisPassword,
 	})
+	fmt.Println("Connected to redis server " + include.Config.RedisServer)
 }
 
 type RDField struct {
@@ -32,6 +34,13 @@ func (u RDField) MustInt() int {
 }
 func (u RDField) Int() (int, error) {
 	res, err := strconv.Atoi(u.data)
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
+}
+func (u RDField) Float64() (float64, error) {
+	res, err := strconv.ParseFloat(u.data, 64)
 	if err != nil {
 		return 0, err
 	}

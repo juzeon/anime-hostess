@@ -7,6 +7,12 @@ export let userConfig = {
     set baseUrl(value: string) {
         localStorage.setItem("animeBaseUrl", value)
     },
+    get userKey() {
+        return localStorage.getItem("animeUserKey") || ''
+    },
+    set userKey(value: string) {
+        localStorage.setItem("animeUserKey", value)
+    },
     get forbidDanmakuList() {
         let storage = localStorage.getItem("animeForbidDanmakuList")
         let results: RegExp[] = []

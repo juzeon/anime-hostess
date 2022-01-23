@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         baseUrl: userConfig.baseUrl,
-        searchText: '',
+        userKey: userConfig.userKey,
         forbidDanmakuList: userConfig.forbidDanmakuList as RegExp[],
         customDanmakuOptions: userConfig.customDanmakuOptions
     },
@@ -16,6 +16,10 @@ export default new Vuex.Store({
         setBaseUrl(state, value: string) {
             userConfig.baseUrl = value
             state.baseUrl = value
+        },
+        setUserKey(state, value: string) {
+            userConfig.userKey = value
+            state.userKey = value
         },
         setForbidDanmakuList(state, value: RegExp[]) {
             userConfig.forbidDanmakuList = value

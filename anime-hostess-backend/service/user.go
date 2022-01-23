@@ -16,7 +16,7 @@ func UserGenerate() include.Result {
 	})
 }
 func UserGetProgress(userID int, request reqstruct.HashUriRequest) include.Result {
-	t, _ := store.GetUserFieldByID(userID, "progress:"+request.Hash).Int()
+	t, _ := store.GetUserFieldByID(userID, "progress:"+request.Hash).Float64()
 	return include.NewSuccessResult(t)
 }
 func UserSetProgress(userID int, request reqstruct.UserSetProgressRequest) include.Result {

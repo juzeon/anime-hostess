@@ -12,7 +12,7 @@ func RegisterUserRouters(user *gin.RouterGroup) {
 	user.POST("/generate", func(ctx *gin.Context) {
 		ctx.JSON(200, service.UserGenerate())
 	})
-	user.GET("/progress/:hash", store.Auth, func(ctx *gin.Context) {
+	user.GET("/progress/:hash", store.AuthIgnoreResult, func(ctx *gin.Context) {
 		var req reqstruct.HashUriRequest
 		if err := ctx.ShouldBindUri(&req); err != nil {
 			ctx.JSON(200, include.NewErrorResult(err.Error()))
@@ -28,7 +28,7 @@ func RegisterUserRouters(user *gin.RouterGroup) {
 		}
 		ctx.JSON(200, service.UserSetProgress(include.GetUserIDFromContext(ctx), req))
 	})
-	user.GET("/searchText/:hash", store.Auth, func(ctx *gin.Context) {
+	user.GET("/searchText/:hash", store.AuthIgnoreResult, func(ctx *gin.Context) {
 		var req reqstruct.HashUriRequest
 		if err := ctx.ShouldBindUri(&req); err != nil {
 			ctx.JSON(200, include.NewErrorResult(err.Error()))

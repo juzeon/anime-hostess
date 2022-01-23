@@ -19,7 +19,8 @@
       </v-card>
       <v-card class="mt-5" :loading="danmakuLoading">
         <p class="text-h6 ml-3 mt-3">添加弹幕</p>
-        <search-bar class="mx-3" v-model="danmakuSearchInput" @search="getDanmakuSourceList"></search-bar>
+        <search-bar class="mx-3" v-model="danmakuSearchInput" @search="userEmitDanmakuSearch"></search-bar>
+        <v-progress-linear indeterminate v-show="danmakuSearchInputLoading"></v-progress-linear>
         <v-list-item v-for="(danmakuSource,index) in danmakuSourceList" :key="'danmakuSource-'+index" two-line>
           <v-list-item-content>
             <v-list-item-title>{{ danmakuSource.title }}</v-list-item-title>
@@ -52,6 +53,7 @@ import DanmakuInsertBtn from "@/components/DanmakuInsertBtn.vue"
 import ForbidDanmakuCard from "@/components/ForbidDanmakuCard.vue"
 import * as vuex from 'vuex'
 import PlayList from "@/components/PlayList.vue"
+import * as QueryString from "querystring"
 
 export default Vue.extend({
   name: "Watch",
@@ -70,6 +72,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      initWatchPending: false,
       episodeDetail: undefined as IEpisode | undefined,
       animeDetail: undefined as IAnimeDetail | undefined,
       player: undefined as Player | undefined,
@@ -89,6 +92,7 @@ export default Vue.extend({
       danmakuListUnfiltered: [] as BulletOption[],
       danmakuListFiltered: [] as BulletOption[],
       danmakuSearchInput: '',
+      danmakuSearchInputLoading: false,
       danmakuLoading: false,
       historyTimeLogger: undefined as number | undefined,
       firstPlay: true
@@ -98,7 +102,11 @@ export default Vue.extend({
     routerProps: {
       immediate: true,
       handler() {
-        this.initWatch()
+        if (!this.player) {
+          this.initWatchPending = true
+        } else {
+          this.initWatch()
+        }
       }
     }
   },
@@ -112,48 +120,68 @@ export default Vue.extend({
     },
     setPlayer(player: Player) {
       this.player = player
+      if (this.initWatchPending) {
+        this.initWatch()
+        this.initWatchPending = false
+      }
     },
     loadVideo() {
       let videoUrl = this.baseUrl + 'video/stream/' + this.episodeDetail?.hash
-      this.player?.updateOptions({src: videoUrl})
+      this.player!.updateOptions({src: videoUrl})
     },
     initWatch() {
+      clearInterval(this.historyTimeLogger)
       this.animeDetail = undefined
       this.episodeDetail = undefined
       this.danmakuListFiltered = []
       this.danmakuListUnfiltered = []
-      clearInterval(this.historyTimeLogger)
       this.firstPlay = true
-      this.player?.danmaku.resetItems([])
+      this.player!.danmaku.resetItems([])
+      this.danmakuSearchInputLoading = true
+      this.$axios.get('user/searchText/' + this.seriesHash).then(res => {
+        this.danmakuSearchInput = res.data.data
+        this.danmakuSearchInputLoading = false
+      })
       this.$axios.get("video/detail/" + this.seriesHash).then(res => {
         this.animeDetail = res.data.data
-        this.danmakuSearchInput = this.animeDetail!.name
         this.getDanmakuSourceList()
         this.episodeDetail = this.animeDetail!.videos.find(video => video.hash === this.hash)
         this.loadVideo()
-        this.player?.on(EVENT.ERROR, () => {
+        this.player!.on(EVENT.ERROR, () => {
           this.loadVideo()
         })
-        this.player?.on(this.player?.danmaku.EVENT.DANMAKU_UPDATE_OPTIONS, () => {
-          this.$store.commit('setCustomDanmakuOptions', this.player?.danmaku.opts)
+        this.player!.on(this.player!.danmaku.EVENT.DANMAKU_UPDATE_OPTIONS, () => {
+          this.$store.commit('setCustomDanmakuOptions', this.player!.danmaku.opts)
         })
-        this.player?.on(EVENT.PLAY, () => {
+        this.player!.on(EVENT.PLAY, () => {
           if (!this.firstPlay) {
             return
           }
-          let historyTimeKey = this.hash + '_' + this.seriesHash
-          let historyTime = localStorage.getItem(historyTimeKey)
-          console.log('history time: ' + historyTime)
-          if (historyTime) {
-            this.player?.seek(parseInt(historyTime))
-          }
-          this.historyTimeLogger = setInterval(() => {
-            // console.log('set time: ' + this.player?.currentTime)
-            localStorage.setItem(historyTimeKey, this.player!.currentTime + '')
-          }, 1000)
           this.firstPlay = false
+          this.$axios.get('user/progress/' + this.hash).then(res => {
+            let progress = parseInt(res.data.data)
+            console.log('progress: ' + progress)
+            if (progress) {
+              this.player!.seek(progress)
+            }
+            this.historyTimeLogger = setInterval(() => {
+              this.$axios.post('user/progress', QueryString.stringify({
+                time: this.player!.currentTime,
+                hash: this.hash,
+              }))
+            }, 5000)
+          })
         })
       })
+    },
+    userEmitDanmakuSearch() {
+      if (this.$store.state.userKey.length) {
+        this.$axios.post('user/searchText', QueryString.stringify({
+          hash: this.seriesHash,
+          searchText: this.danmakuSearchInput,
+        }))
+      }
+      this.getDanmakuSourceList()
     },
     getDanmakuSourceList() {
       this.danmakuLoading = true

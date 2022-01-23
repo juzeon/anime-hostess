@@ -23,6 +23,15 @@ func Auth(ctx *gin.Context) {
 		ctx.Set("UserID", id)
 	}
 }
+func AuthIgnoreResult(ctx *gin.Context) {
+	id := GetUserIDByToken(ctx.GetHeader("Authorization"))
+	if id == 0 && ctx.GetHeader("Authorization") != "" {
+		ctx.JSON(200, include.NewErrorResult("token不存在"))
+		ctx.Abort()
+	} else {
+		ctx.Set("UserID", id)
+	}
+}
 func GetUserIDByToken(token string) int {
 	idStr := RDClient.HGet(RDCtx, RDPrefix+"token:user", token).Val()
 	id, _ := strconv.Atoi(idStr)

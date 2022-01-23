@@ -4,6 +4,9 @@ import {swal} from "@/plugins/swal"
 
 export let appAxios = axios.create({
     baseURL: userConfig.baseUrl,
+    headers: {
+        "Authorization": userConfig.userKey
+    },
     transformResponse: data => {
         try {
             return JSON.parse(data)
