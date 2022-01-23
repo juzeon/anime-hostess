@@ -1,20 +1,22 @@
 <template>
   <focus-area>
-    <v-card>
-      <v-card-title>
-        伺服器上的影片资料夹
+    <v-card :loading="loading">
+      <v-card-title class="d-flex align-center">
+        <p>伺服器上的影片资料夹</p>
+        <v-spacer></v-spacer>
+        <p><v-btn icon @click="getSeriesList"><v-icon>mdi-refresh</v-icon></v-btn></p>
       </v-card-title>
       <search-bar class="mx-7" v-model="searchText"></search-bar>
       <v-expansion-panels>
         <v-expansion-panel v-for="(item,index) in filteredSeries" :key="'series-'+index">
           <v-expansion-panel-header>
-            {{item.name}}
+            {{ item.name }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-list>
               <v-list-item v-for="(episode,index2) in item.videos" :key="'episode-'+index+'-'+index2">
                 <v-list-item-title>
-                  <v-btn text @click="navigateToWatch(item.hash,episode.hash)">{{episode.name}}</v-btn>
+                  <v-btn text @click="navigateToWatch(item.hash,episode.hash)">{{ episode.name }}</v-btn>
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -37,32 +39,45 @@ export default Vue.extend({
   metaInfo: {
     title: '主页'
   },
-  mounted() {
-    this.getSeriesList()
+  activated() {
+    if (!this.$store.state.baseUrl.length) {
+      return
+    }
+    if (!this.pageInit) {
+      this.pageInit = true
+      this.initPage()
+    }
   },
   data() {
     return {
-      searchText:'',
-      series:[] as ISeries[],
+      pageInit: false,
+      searchText: '',
+      series: [] as ISeries[],
+      loading:false,
     }
   },
-  computed:{
-    filteredSeries():ISeries[]{
-      if(this.searchText.length===0){
+  computed: {
+    filteredSeries(): ISeries[] {
+      if (this.searchText.length === 0) {
         return this.series
       }
-      return this.series.filter(item=>{
+      return this.series.filter(item => {
         return item.name.includes(this.searchText)
       })
     }
   },
   methods: {
-    navigateToWatch(seriesHash:string,hash:string){
-      this.$router.push({name:'Watch',params:{seriesHash,hash}})
+    initPage() {
+      this.getSeriesList()
     },
-    getSeriesList(){
-      this.$axios.get('video/list').then(res=>{
+    navigateToWatch(seriesHash: string, hash: string) {
+      this.$router.push({name: 'Watch', params: {seriesHash, hash}})
+    },
+    getSeriesList() {
+      this.loading=true
+      this.$axios.get('video/list').then(res => {
         this.series = res.data.data
+        this.loading=false
       })
     }
   }
