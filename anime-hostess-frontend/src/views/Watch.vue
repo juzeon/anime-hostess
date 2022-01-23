@@ -53,7 +53,7 @@ import DanmakuInsertBtn from "@/components/DanmakuInsertBtn.vue"
 import ForbidDanmakuCard from "@/components/ForbidDanmakuCard.vue"
 import * as vuex from 'vuex'
 import PlayList from "@/components/PlayList.vue"
-import * as QueryString from "querystring"
+import * as qs from "qs"
 
 export default Vue.extend({
   name: "Watch",
@@ -165,7 +165,7 @@ export default Vue.extend({
               this.player!.seek(progress)
             }
             this.historyTimeLogger = setInterval(() => {
-              this.$axios.post('user/progress', QueryString.stringify({
+              this.$axios.post('user/progress', qs.stringify({
                 time: this.player!.currentTime,
                 hash: this.hash,
               }))
@@ -176,7 +176,7 @@ export default Vue.extend({
     },
     userEmitDanmakuSearch() {
       if (this.$store.state.userKey.length) {
-        this.$axios.post('user/searchText', QueryString.stringify({
+        this.$axios.post('user/searchText', qs.stringify({
           hash: this.seriesHash,
           searchText: this.danmakuSearchInput,
         }))
