@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/juzeon/anime-hostess/include"
 	"github.com/juzeon/anime-hostess/mygrpc"
-	"github.com/juzeon/anime-hostess/router/reqstruct"
+	"github.com/juzeon/anime-hostess/reqstruct"
 )
 
 func BulletSearch(request reqstruct.BulletSearchRequest) include.Result {

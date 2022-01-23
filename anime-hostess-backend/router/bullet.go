@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/juzeon/anime-hostess/include"
-	"github.com/juzeon/anime-hostess/router/reqstruct"
+	"github.com/juzeon/anime-hostess/reqstruct"
 	"github.com/juzeon/anime-hostess/service"
 )
 
